@@ -39,12 +39,43 @@ public class ComparacionApplication {
 		return arr;
 	}
 
+	public static Comparable[] mezcla(Comparable arr[]) {
+		if (arr.length > 1) {
+			int i = 0;
+			int m = arr.length / 2;
+			int j = arr.length;
+			Comparable arrIzq[] = Arrays.copyOfRange(arr, i, m);
+			Comparable arrDer[] = Arrays.copyOfRange(arr, m, j);
+			arrIzq = mezcla(arrIzq);
+			arrDer = mezcla(arrDer);
+			int pi = 0;
+			int pd = 0;
+			for (int x = 0; x < arr.length; x++) {
+				if (pi < arrIzq.length) {
+					if (pd < arrDer.length) {
+						if (arrIzq[pi].compareTo(arrDer[pd]) < 0) {
+							arr[x] = arrIzq[pi++];
+						} else {
+							arr[x] = arrDer[pd++];
+						}
+					} else {
+						arr[x] = arrIzq[pi++];
+					}
+				} else {
+					arr[x] = arrDer[pd++];
+				}
+			}
+		}
+		return arr;
+	}
+
 	public static void main(String[] args) {
 		Comparacion arreglo[] = new Comparacion[100000];
-		Comparacion arreglo2[];
+		Comparacion arreglo2[], arreglo3[];
 		for (int i = 0; i < 100000; i++)
 			arreglo[i] = new Comparacion((int) (Math.random() * 1000));
 		arreglo2 = arreglo.clone();
+		arreglo3 = arreglo.clone();
 		long milisecondsBurbuja = System.currentTimeMillis();
 		arreglo = (Comparacion[]) burbuja(arreglo);
 		milisecondsBurbuja = System.currentTimeMillis() - milisecondsBurbuja;
@@ -52,8 +83,13 @@ public class ComparacionApplication {
 		long milisecondsSeleccion = System.currentTimeMillis();
 		arreglo2 = (Comparacion[]) seleccion(arreglo2);
 		milisecondsSeleccion = System.currentTimeMillis() - milisecondsSeleccion;
+
+		long milisecondsMezcla = System.currentTimeMillis();
+		arreglo3 = (Comparacion[]) mezcla(arreglo3);
+		milisecondsMezcla = System.currentTimeMillis() - milisecondsMezcla;
 		System.out.println(milisecondsBurbuja);
 		System.out.println(milisecondsSeleccion);
+		System.out.println(milisecondsMezcla);
 		// for (int i = 0; i < 100000; i++)
 		// System.out.println(arreglo[i].getValor());
 		SpringApplication.run(ComparacionApplication.class, args);
