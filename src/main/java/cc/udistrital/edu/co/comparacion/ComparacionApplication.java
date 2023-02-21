@@ -69,13 +69,49 @@ public class ComparacionApplication {
 		return arr;
 	}
 
+	public static void quickSort(Comparable[] arr, int ix, int fx) {
+		if (ix == fx) {
+			return;
+		}
+
+		Comparable pivote = arr[fx];
+		int i = ix;
+		int j = fx - 1;
+
+		while (i != j) {
+			while (arr[i].compareTo(pivote) <= 0 && i < j) {
+				i++;
+			}
+			while (arr[j].compareTo(pivote) > 0 && i < j) {
+				j--;
+			}
+			if (i != j && i < j) {
+				Comparable aux = arr[i];
+				arr[i] = arr[j];
+				arr[j] = aux;
+			}
+		}
+		if (arr[i].compareTo(pivote) <= 0) {
+			i++;
+			j++;
+		}
+		if (i != fx) {
+			Comparable aux = arr[i];
+			arr[i] = arr[fx];
+			arr[fx] = aux;
+		}
+		quickSort(arr, ix, Math.max(i - 1, ix));
+		quickSort(arr, Math.min(j + 1, fx), fx);
+	}
+
 	public static void main(String[] args) {
 		Comparacion arreglo[] = new Comparacion[100000];
-		Comparacion arreglo2[], arreglo3[];
+		Comparacion arreglo2[], arreglo3[], arreglo4[];
 		for (int i = 0; i < 100000; i++)
-			arreglo[i] = new Comparacion((int) (Math.random() * 1000));
+			arreglo[i] = new Comparacion((int) (Math.random() * 100000));
 		arreglo2 = arreglo.clone();
 		arreglo3 = arreglo.clone();
+		arreglo4 = arreglo.clone();
 		long milisecondsBurbuja = System.currentTimeMillis();
 		arreglo = (Comparacion[]) burbuja(arreglo);
 		milisecondsBurbuja = System.currentTimeMillis() - milisecondsBurbuja;
@@ -87,9 +123,15 @@ public class ComparacionApplication {
 		long milisecondsMezcla = System.currentTimeMillis();
 		arreglo3 = (Comparacion[]) mezcla(arreglo3);
 		milisecondsMezcla = System.currentTimeMillis() - milisecondsMezcla;
+
+		long milisecondsQuick = System.currentTimeMillis();
+		quickSort(arreglo4, 0, arreglo4.length - 1);
+		milisecondsQuick = System.currentTimeMillis() - milisecondsQuick;
+
 		System.out.println(milisecondsBurbuja);
 		System.out.println(milisecondsSeleccion);
 		System.out.println(milisecondsMezcla);
+		System.out.println(milisecondsQuick);
 		// for (int i = 0; i < 100000; i++)
 		// System.out.println(arreglo[i].getValor());
 		SpringApplication.run(ComparacionApplication.class, args);
